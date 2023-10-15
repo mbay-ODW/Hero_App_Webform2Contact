@@ -64,7 +64,8 @@ Create project on that contact
 2. docker-compose up
 
 ## Installation (dockerhub)
-Docker hub image will follow soon
+1. docker pull y509177/hero_software_webform2contact:latest
+2. docker run y509177/hero_software_webform2contact
 
 ## Components
 The project consists of the following major components:
