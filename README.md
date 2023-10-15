@@ -1,7 +1,9 @@
 # Hero_Software_Webform2Contact
 
 ## Overview
-Hero_Software_Webform2Contact is a Python microservice designed to create a contact and a project within the Hero Software based on the content of a webform sent via email. Find more to Hero Software here on that [Link](https://hero-software.de).
+Hero_Software_Webform2Contact is a Python microservice designed to create a contact and a project within the Hero Software based on the content of a webform sent via email.
+
+If you find Hero Software interesting or you want to try it out, you can create an account via my referral link here: [Link](https://hero-software.de/signup/helden-werben-helden?coupon=CzcIpg)
 
 Hero Software offers a GraphQL Api that can be used to automate several functionalites as well as integrate other 3rd party tools.
 
@@ -120,4 +122,4 @@ All rights to the Hero Software, Hero App, and any associated materials are rese
 Ssee the [LICENSE.md](LICENSE.md) file for details.
 
 ## Acknowledgments
-- If you find Hero Software interesting you can create an account via my referal link here: [Link](https://hero-software.de/signup/helden-werben-helden?coupon=CzcIpg)
+- If you find Hero Software interesting you can create an account via my referral link here: [Link](https://hero-software.de/signup/helden-werben-helden?coupon=CzcIpg)
