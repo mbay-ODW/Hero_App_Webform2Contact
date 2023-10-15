@@ -18,13 +18,25 @@ Before you can use that feature on Hero Software, you need to request an token. 
 - Logs actions and errors for tracking and debugging.
 - Sends email notifications for successful processing or errors.
 
+
+Creates contact:
+
+![Contacts](/pics/contact.png)
+![Contacts](/pics/contact_2.png)
+
+Create project on that contact
+
+![Projects](/pics/project.png)
+
+
+
 ## Dependencies
 - Python3
 - Required Python libraries (e.g., `requests`, `json`, `logging`, `email`)
 - Hero Software GraphQL API Token
-- Hero
+- Hero Software Account (Trial works as well)
 - Email service (e.g., SMTP server)
-- Webform with correct body content structure according:
+- Webform with correct body content (text/plain) structure according:
     ```txt
     first_name:FIRSTNAME;
     last_name:LASTNAME;
@@ -94,10 +106,14 @@ The following environment variables are used for configuration:
 - `GRAPHQL_BEARER_TOKEN`: The bearer token for authenticating with the Hero Software.
 - `HERO_MEASURE_ID`: The Hero Software measure ID used for project creation.
 
-## Logging
-The project utilizes logging to track its operation and to report any encountered errors. Log files are stored in a directory for reference.
 
+## Disclaimer
 
+The Hero_App_Webform2Contact microservice is an independent project and is not officially affiliated with Hero Software. All rights related to the Hero Software and its associated trademarks, copyrights, and intellectual property are owned by Hero Software. 
+
+The code and documentation provided in this project are intended for informational and educational purposes only and should not be considered an official product or service offered by Hero Software. Any use of the Hero software, including the Hero App, should be conducted in compliance with Hero Software's terms and conditions.
+
+All rights to the Hero Software, Hero App, and any associated materials are reserved by Hero Software.
 
 ## License
 Ssee the [LICENSE.md](LICENSE.md) file for details.
