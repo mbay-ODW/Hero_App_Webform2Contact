@@ -122,4 +122,4 @@ All rights to the Hero Software, Hero App, and any associated materials are rese
 Ssee the [LICENSE.md](LICENSE.md) file for details.
 
 ## Acknowledgments
-- If you find Hero Software interesting you can create an account via my referral link here: [Link](https://hero-software.de/signup/helden-werben-helden?coupon=CzcIpg)
+- Thanks for Hero Software support creating me an Token and answering my GraphQL questions
