@@ -1,0 +1,10 @@
+version: '3'
+services:
+  watcher:
+    build:
+      context: .  # Use the current directory as the build context
+      dockerfile: Dockerfile  # Specify the Dockerfile to use
+    env_file:
+      - .env  # Load environment variables from the .env file
+    container_name: watcher
+    restart: always  # Automatically restart the container if it stops

@@ -1,0 +1,5 @@
+imapclient
+gql
+requests
+pyfiglet
+graphql-query 
