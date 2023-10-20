@@ -3,6 +3,7 @@ import json
 import logging
 import os
 from graphql_query import Argument, Operation, Query
+import sys
 
 # Initialize a logger for the HeroGraphQLConnection class
 logger = logging.getLogger('Hero GraphQL Connection Class')
@@ -16,6 +17,8 @@ class HeroGraphQLConnection():
             self.headers = {}
             self.headers["Content-Type"] = "application/json"
             self.headers["Authorization"] = f"Bearer {self.token}"
+            self.headers['User-Agent'] = ''
+            self.logger.debug(f'Headers is set to: {self.headers}')
             self.logger.debug("Checking connection")
             self.check_connection()
             self.logger.debug("Connection checked")
@@ -29,7 +32,8 @@ class HeroGraphQLConnection():
 
     def check_connection(self):
         try:
-            payload = "{\"query\":\"query {\\n   contacts {\\n      id\\n   }\\n}\"}"
+            payload = "{\"query\":\"query {\\n   contacts {\\n\\t\\tid\\n   }\\n}\"}"
+            self.logger.debug(f'Using the following payload: {payload}')
             response = requests.request("POST", self.url, data=payload, headers=self.headers)
             if response.status_code == 200:
                 data = response.json()
@@ -37,9 +41,10 @@ class HeroGraphQLConnection():
                     raise Exception(f"First GraphQL Error: {data['errors'][0]['message']}")
                 self.logger.debug("Connection to GraphQL works")
             else:
-                raise Exception(f"GraphQL gave status code: {response.status_code}")
+                raise Exception(f"GraphQL gave status code: {response.status_code} and following text: {response.text}")
         except Exception as e:
             self.logger.error(e)
+            sys.exit()
 
     def create_contact(self, contact):
         try:
@@ -91,6 +96,9 @@ class HeroGraphQLConnection():
                         raise Exception(f"First GraphQL Error: {data['errors'][0]['message']}")
                     self.logger.debug("No errors")
                     self.logger.info("Project was created")
+                    # Get the project id by parsing the data object
+                    self.project_id = 0
+                    #self.project_id = data['']
                     return data
                 except Exception as e:
                     self.logger.error(e)
@@ -98,8 +106,83 @@ class HeroGraphQLConnection():
                 raise Exception
         except Exception as e:
             self.logger.error(e)
+    
+    def upload_documents(self, files):
+        try:
+            self.files = []
+            for i in files:
+                self.fileUrl = "https://login.hero-software.de/app/v8/FileUploads/upload"
+                self.fileHeaders = {}
+                self.fileHeaders["Content-Type"] = "multipart/form-data;"
+                self.fileHeaders["x-auth-token"] = f"{self.token}"
+                self.fileHeaders["Authorization"] = f"Bearer {self.token}"
+                self.fileHeaders["User-Agent"] = ""
+                payload = "Content-Disposition: form-data; name=\"file\"; filename=\"beg_infoblatt_foerderfaehige_kosten.pdf\"\r\nContent-Type: application/pdf\r\nContent-Disposition: form-data; name=\"uuid\"\r\n"
+                response = requests.request("POST", self.fileUrl, data=payload, headers=self.fileHeaders)
+                self.logger.debug(f'Received status code: {response.status_code} and text {response.text}')
+                if response.status_code == 200:
+                    try:
+                        # Parse the response content as JSON
+                        data = response.json()
+                        self.logger.debug(f'The data was in the response: {data}. Checking for errors.')
+                        if 'errors' in data:
+                            raise Exception(f"First GraphQL Error: {data['errors'][0]['message']}")
+                        self.logger.debug("No errors")
+                        self.logger.info("File was uploaded")
+                        uuid = data['data']['uuid']
+                        self.logger.debug(f"Received the following uuid: {uuid}")
+                        self.files.append(uuid)
+                    except Exception as e:
+                        self.logger.error(e)
+                else:
+                    raise Exception("Not status code 200 for uploading files")
+            self.logger.debug("Uploaded the following files: {files}")
+            self.logger.info("Done uploading attachments")
+            return self.files
+        except Exception as e:
+            self.logger.error(e)
+            return self.files
+    
+    def get_document_type_id(self):
+      pass
 
-    def check_contact_exists(self):
+    def assign_documents_to_project(self):
+        try:
+            for i in self.files:
+                if i == "file":
+                    target = Argument(name="target",value="project_match")
+                    target_id = Argument(name="target_it",value=self.project_id)
+                    file_upload_uuid = Argument(name="file_upload_uuid",value=i)
+                    document_type_id = Argument(name="document_type_id",value=self.get_document_type_id())
+                    document = Argument(name="document",value=document_type_id)
+                    mutation_payload = Operation(type="mutation create_document_upload", queries=[Query(name="upload_document", arguments=[target,target_id,file_upload_uuid,document], fields=['id'])])
+                elif i == "image":
+                    target_id = Argument(name="target_it",value=self.project_id)
+                    target = Argument(name="target",value="project_match")
+                    file_upload_uuid = Argument(name="file_upload_uuid",value=i)
+                    mutation_payload = Operation(type="mutation create_image_upload", queries=[Query(name="upload_image", arguments=[target,target_id,file_upload_uuid], fields=['id'])])
+                data = {}
+                data['query'] = mutation_payload.render()
+                self.logger.debug(f'Payload for assigning the attachment to GraphQL looks like: {json.dumps(data)}. Sending data to the GraphQL Server.')
+                response = requests.request("POST", self.url, data=json.dumps(data), headers=self.headers)
+                self.logger.debug(f'Received status code: {response.status_code} and text {response.text}')
+                if response.status_code == 200:
+                    try:
+                        # Parse the response content as JSON
+                        data = response.json()
+                        self.logger.debug(f'The data was in the response: {data}. Checking for errors.')
+                        if 'errors' in data:
+                            raise Exception(f"First GraphQL Error: {data['errors'][0]['message']}")
+                        self.logger.debug("No errors, document assigned")
+                    except Exception as e:
+                        self.logger.error(e)
+            self.logger.info("Done assigning document to project")
+            return True
+        except Exception as e:
+            self.logger.error(e)
+
+    # Checking of contact exists via mapping of mail field
+    def check_contact_exists(self,mail):
         try:
             pass
         except:
